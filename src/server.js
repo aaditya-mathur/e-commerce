@@ -1,11 +1,14 @@
 import express from "express";
-import authRouter from "./routes/user.routes.js";
+import cookieParser from "cookie-parser";
+import { authRouter, productRouter } from "./routes/routes.index.js";
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json({ extended: false }));
 
 app.use("/api/auth", authRouter);
+app.use("/api/", productRouter);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
