@@ -15,7 +15,7 @@ import {
 
 const router = express.Router();
 
-router.get("/products", ensureAuthenticated, ensureAuthorized, getAllProducts);
+router.get("/", ensureAuthenticated, ensureAuthorized, getAllProducts);
 router.get("/featuredProducts", getFeaturedProducts);
 router.get("/recommendations", getRecommendedProducts);
 router.get("/category/:category", getProductsByCategory);
