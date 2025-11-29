@@ -17,7 +17,7 @@ export const findExistingUser = async (email) => {
 // FOR FINDING EXISTING USER BY ID
 export const findExistingUserById = async (userId) => {
   try {
-    const existingUser = await User.findById(userId);
+    const existingUser = await User.findById(userId).select("-password");
     return existingUser;
   } catch (error) {
     console.error("Error finding user by ID:", error.message);

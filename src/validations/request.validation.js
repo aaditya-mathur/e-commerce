@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const signUpPostRequestBodySchema = z.object({
   email: z.email().min(1, "email is required field"),
@@ -18,5 +18,20 @@ export const signUpPostRequestBodySchema = z.object({
 
 export const loginPostRequestBodySchema = z.object({
   email: z.email().min(1, " email is required "),
-  password: z.string().min(1, " password is required ")
+  password: z.string().min(1, " password is required "),
+});
+
+export const createProductPostRequestBodySchema = z.object({
+  name: z.string().min(1, "product name is required"),
+  description: z.string().min(1, "description is required"),
+  price: z.coerce.number().min(0, "price must be a positive number"),
+
+  image: z
+    .string()
+    .min(1, "image is required")
+    .refine((val) => val.startsWith("data:image/"), {
+      message: "image must be a valid base64 image string",
+    }),
+
+  category: z.string().min(1, "category is required"),
 });

@@ -27,7 +27,7 @@ export const ensureAuthenticated = asyncHandler(async (req, res, next) => {
 });
 
 export const ensureAuthorized = asyncHandler(async (req, res, next) => {
-  if (req.user && req.user.role == "admin") {
+  if (req.user && req.user.role === "admin") {
     return next();
   }
   throw new ApiError(403, "unauthorized access - admin only");
