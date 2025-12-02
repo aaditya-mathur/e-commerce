@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 
 export const fetchAllProducts = async () => {
   try {
-    const allProducts = await Product.find({});
+    const allProducts = await Product.find({}).lean();
     return allProducts;
   } catch (error) {
     console.error("error while fetching the products", error.message);
@@ -95,7 +95,7 @@ export const fetchProductsByCategory = async (category) => {
   try {
     const products = await Product.find({
       category,
-    });
+    }).lean();
     return products;
   } catch (error) {
     console.error("error while fetching products by category");

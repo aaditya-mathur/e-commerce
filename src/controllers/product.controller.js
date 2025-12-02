@@ -54,7 +54,7 @@ export const getFeaturedProducts = asyncHandler(async (req, res) => {
     );
 });
 
-// TO CREATE NEW PRODUCT
+// TO CREATE NEW PRODUCT (ADMIN ONLY)
 export const createProduct = asyncHandler(async (req, res) => {
   const validationResult =
     await createProductPostRequestBodySchema.safeParseAsync(req.body);
@@ -92,8 +92,8 @@ export const createProduct = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, "product created successfully", product));
 });
 
-// TO DELETE NEW PRODUCT
-export const deleteProduct = asyncHandler(async (req, res) => {
+// TO DELETE PRODUCT (ADMIN ONLY)
+export const deleteProduct = asyncHandler(async (req, res) => { 
   const id = req.params.id;
 
   const existingProduct = await findProductById(id);
@@ -139,7 +139,7 @@ export const getProductsByCategory = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, "products fetched successfully", products));
 });
 
-// TO TOGGLE FEATURED PRODUCTS
+// TO TOGGLE FEATURED PRODUCTS (ADMIN ONLY)
 export const toggleFeaturedProduct = asyncHandler(async (req, res) => {
   const id = req.params.id;
 

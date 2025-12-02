@@ -1,6 +1,12 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import { authRouter, cartRouter, couponRouter, productRouter } from "./routes/routes.index.js";
+import {
+  authRouter,
+  cartRouter,
+  couponRouter,
+  productRouter,
+  paymentRouter,
+} from "./routes/routes.index.js";
 
 const app = express();
 
@@ -11,6 +17,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/coupons", couponRouter);
+app.use("/api/payments", paymentRouter);
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode || 500).json({
