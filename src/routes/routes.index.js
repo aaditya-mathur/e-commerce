@@ -3,5 +3,13 @@ import productRouter from "./product.routes.js";
 import cartRouter from "./cart.routes.js";
 import couponRouter from "./coupon.routes.js";
 import paymentRouter from "./payment.routes.js";
+import analyticsRouter from "./analytics.routes.js";
 
-export { authRouter, productRouter, cartRouter, couponRouter, paymentRouter };
+export {
+  authRouter,
+  productRouter,
+  cartRouter,
+  couponRouter,
+  paymentRouter,
+  analyticsRouter,
+};
