@@ -10,7 +10,7 @@ import {
   getProductsByCategory,
   getRecommendedProducts,
   createProduct,
-  toggleFeaturedProduct
+  toggleFeaturedProduct,
 } from "../controllers/product.controller.js";
 
 const router = express.Router();
@@ -20,7 +20,12 @@ router.get("/featuredProducts", getFeaturedProducts);
 router.get("/recommendations", getRecommendedProducts);
 router.get("/category/:category", getProductsByCategory);
 router.post("/create", ensureAuthenticated, ensureAuthorized, createProduct);
-router.patch("/:id", ensureAuthenticated, ensureAuthorized, toggleFeaturedProduct);
+router.patch(
+  "/:id",
+  ensureAuthenticated,
+  ensureAuthorized,
+  toggleFeaturedProduct
+);
 router.delete("/:id", ensureAuthenticated, ensureAuthorized, deleteProduct);
 
 export default router;

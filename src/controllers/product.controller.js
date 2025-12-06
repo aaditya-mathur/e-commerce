@@ -69,14 +69,19 @@ export const createProduct = asyncHandler(async (req, res) => {
 
   const { name, description, price, image, category } = validationResult.data;
 
-  const cloudinaryResponse = await cloudinary.uploader.upload(image, {
-    folder: "products",
-  });
-
-  const uploadedImage = cloudinaryResponse?.secure_url;
+  let uploadedImage;
+  try {
+    const cloudinaryResponse = await cloudinary.uploader.upload(image, {
+      folder: "products",
+    });
+    uploadedImage = cloudinaryResponse?.secure_url;
+  } catch (error) {
+    console.error("Cloudinary upload error:", error.message);
+    throw new ApiError(500, "failed to upload image to cloudinary");
+  }
 
   if (!uploadedImage) {
-    throw new ApiError(500, "failed to upload image try again");
+    throw new ApiError(500, "image upload failed - no URL returned");
   }
 
   const product = await createNewProduct(
@@ -93,9 +98,8 @@ export const createProduct = asyncHandler(async (req, res) => {
 });
 
 // TO DELETE PRODUCT (ADMIN ONLY)
-export const deleteProduct = asyncHandler(async (req, res) => { 
+export const deleteProduct = asyncHandler(async (req, res) => {
   const id = req.params.id;
-
   const existingProduct = await findProductById(id);
 
   if (!existingProduct) {
@@ -108,7 +112,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     await cloudinary.uploader.destroy(`products/${publicId}`);
     console.log("image deleted from cloudinary");
   } catch (error) {
-    throw new ApiError(500, "error deleting image from cloudinary");
+    console.error("Error deleting from cloudinary:", error.message);
   }
 
   await deleteExistingProduct(id);
@@ -145,6 +149,10 @@ export const toggleFeaturedProduct = asyncHandler(async (req, res) => {
 
   const existingProduct = await findProductById(id);
 
+  if (!existingProduct) {
+    throw new ApiError(404, "product does not exist");
+  }
+
   existingProduct.isFeatured = !existingProduct.isFeatured;
 
   const updatedProduct = await existingProduct.save();
@@ -169,4 +177,4 @@ async function updateFeaturedProductsCache() {
     console.error("error in updating featured products cache");
     throw new ApiError(500, "error while updating featured products cache");
   }
-};
+}

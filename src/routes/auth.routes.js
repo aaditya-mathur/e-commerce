@@ -6,16 +6,13 @@ import {
   logout,
   getProfile,
 } from "../controllers/auth.controller.js";
-import {
-  ensureAuthenticated,
-  ensureAuthorized,
-} from "../middleware/auth.middleware.js";
+import { ensureAuthenticated } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/refreshToken", refreshToken);
-router.get("/logout", logout);
 router.get("/profile", ensureAuthenticated, getProfile);
+router.post("/refreshToken", refreshToken);
+router.post("/logout", logout);
 router.post("/signup", signup);
 router.post("/login", login);
 

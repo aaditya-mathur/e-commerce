@@ -12,7 +12,7 @@ import {
 const app = express();
 
 app.use(cookieParser());
-app.use(express.json({ extended: false }));
+app.use(express.json({ limit: "10mb" }));
 
 app.use("/api/auth", authRouter);
 app.use("/api/products", productRouter);

@@ -3,10 +3,10 @@ import { User } from "../models/user.model.js";
 import { Product } from "../models/product.model.js";
 import { Order } from "../models/order.model.js";
 
-const endDate = new Date();
-const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-
 export const getAnalytics = asyncHandler(async (req, res) => {
+  const days = parseInt(req.query.days) || 7;
+  const endDate = new Date();
+  const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000);
   const analyticsData = await getAnalyticsData();
 
   const dailySalesData = await getDailySalesData(startDate, endDate);
@@ -68,7 +68,7 @@ export const getDailySalesData = async (startDate, endDate) => {
     },
   ]);
 
-const dateArray = getDatesInRange(startDate, endDate);
+  const dateArray = getDatesInRange(startDate, endDate);
 
   return dateArray.map((date) => {
     const foundData = dailySalesData.find((item) => item._id === date);
@@ -79,7 +79,6 @@ const dateArray = getDatesInRange(startDate, endDate);
       revenue: foundData?.revenue || 0,
     };
   });
-  
 };
 
 const getDatesInRange = (startDate, endDate) => {

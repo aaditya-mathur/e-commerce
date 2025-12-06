@@ -1,10 +1,13 @@
 import { ApiError, ApiResponse, asyncHandler } from "../utils/utils.index.js";
 import { Product } from "../models/product.model.js";
+import {
+  addToCartPostRequestBodySchema,
+  updateQuantityPatchRequestBodySchema,
+} from "../validations/request.validation.js";
 
 // TO GET STORED PRODUCTS IN CART
 export const getProducts = asyncHandler(async (req, res) => {
   const productIds = req.user.cartItems.map((item) => item.product);
-
   const products = await Product.find({ _id: { $in: productIds } });
 
   const cartItems = products.map((product) => {
@@ -13,59 +16,101 @@ export const getProducts = asyncHandler(async (req, res) => {
     );
     return { ...product.toJSON(), quantity: item.quantity };
   });
+
   return res.status(200).json(new ApiResponse(200, "success", cartItems));
 });
 
 // TO ADD PRODUCTS IN CART
 export const addToCart = asyncHandler(async (req, res) => {
-  const user = req.user;
-  const { productId } = req.body;
+  const validationResult = await addToCartPostRequestBodySchema.safeParseAsync(
+    req.body
+  );
 
-  const existingItem = user.cartItems.find(
+  if (validationResult.error) {
+    throw new ApiError(
+      400,
+      "validation failed",
+      validationResult.error.format()
+    );
+  }
+
+  const { productId } = validationResult.data;
+
+  const existingItem = req.user.cartItems.find(
     (item) => item.product.toString() === productId
   );
+
   if (existingItem) {
-    existingItem.quantity = existingItem.quantity + 1;
+    existingItem.quantity += 1;
   } else {
-    user.cartItems.push({ product: productId, quantity: 1 });
+    req.user.cartItems.push({ product: productId, quantity: 1 });
   }
-  await user.save();
-  return res.status(200).json(new ApiResponse(200, "item added successfully"));
+
+  await req.user.save();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "item added successfully", req.user.cartItems));
 });
 
 // TO COMPLETELY REMOVE EXISTING PRODUCT
 export const removeAll = asyncHandler(async (req, res) => {
-  const user = req.user;
   const { productId } = req.params;
 
-  const existingItem = user.cartItems.find(
+  const existingItem = req.user.cartItems.find(
     (item) => item.product.toString() === productId
   );
+
   if (!existingItem) {
     throw new ApiError(404, "could not find product");
   }
-  user.cartItems = user.cartItems.filter(
+
+  req.user.cartItems = req.user.cartItems.filter(
     (item) => item.product.toString() !== productId
   );
 
-  await user.save();
+  await req.user.save();
   return res
     .status(200)
-    .json(new ApiResponse(200, "item deleted successfully"));
+    .json(
+      new ApiResponse(200, "item deleted successfully", req.user.cartItems)
+    );
 });
 
 // TO ADJUST QUANTITY
 export const updateQuantity = asyncHandler(async (req, res) => {
-  const user = req.user;
   const { productId } = req.params;
-  const { quantity } = req.body;
-  const existingItem = user.cartItems.find(
+
+  const validationResult =
+    await updateQuantityPatchRequestBodySchema.safeParseAsync(req.body);
+
+  if (validationResult.error) {
+    throw new ApiError(
+      400,
+      "validation failed",
+      validationResult.error.format()
+    );
+  }
+
+  const { quantity } = validationResult.data;
+
+  const existingItem = req.user.cartItems.find(
     (item) => item.product.toString() === productId
   );
+
   if (!existingItem) {
     throw new ApiError(404, "could not find product");
   }
-  existingItem.quantity = quantity;
-  await user.save();
-  return res.status(200).json(new ApiResponse(200, "item quantity updated"));
+
+  if (quantity === 0) {
+    req.user.cartItems = req.user.cartItems.filter(
+      (item) => item.product.toString() !== productId
+    );
+  } else {
+    existingItem.quantity = quantity;
+  }
+
+  await req.user.save();
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "item quantity updated", req.user.cartItems));
 });

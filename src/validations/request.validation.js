@@ -35,3 +35,15 @@ export const createProductPostRequestBodySchema = z.object({
 
   category: z.string().min(1, "category is required"),
 });
+
+export const addToCartPostRequestBodySchema = z.object({
+  productId: z.string().min(1, "product ID is required"),
+});
+
+export const updateQuantityPatchRequestBodySchema = z.object({
+  quantity: z.coerce.number().min(1, "quantity must be at least 1"),
+});
+
+export const validateCouponPostRequestBodySchema = z.object({
+  code: z.string().min(1, "coupon code is required"),
+});

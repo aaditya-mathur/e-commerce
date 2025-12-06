@@ -5,7 +5,7 @@ import {
   removeAll,
   updateQuantity,
 } from "../controllers/cart.controller.js";
-import { ensureAuthenticated } from "../middleware/auth.middleware.js"
+import { ensureAuthenticated } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 

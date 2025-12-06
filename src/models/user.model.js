@@ -70,11 +70,11 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 userSchema.methods.generateRefreshToken = function () {
-  return jwt.sign(  
+  return jwt.sign(
     {
       _id: this._id,
       role: this.role,
-      email:  this.email,
+      email: this.email,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
