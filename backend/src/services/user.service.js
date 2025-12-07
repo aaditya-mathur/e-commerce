@@ -10,12 +10,11 @@ export const findExistingUserById = async (userId) => {
   return existingUser;
 };
 
-export const createNewUser = async (name, email, password, address) => {
+export const createNewUser = async (name, email, password) => {
   const newUser = await User.create({
     name,
     email,
     password,
-    address,
   });
   return newUser;
 };

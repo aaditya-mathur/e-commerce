@@ -3,7 +3,6 @@ import { z } from "zod";
 export const signUpPostRequestBodySchema = z.object({
   email: z.email().min(1, "email is required field"),
   name: z.string().min(1, "first name is required"),
-  address: z.string().min(1, "address is required"),
   password: z
     .string()
     .min(8, "password must contain atleast 8 characters")

@@ -29,7 +29,7 @@ export const signup = asyncHandler(async (req, res) => {
     );
   }
 
-  const { name, email, password, address } = validationResult.data;
+  const { name, email, password } = validationResult.data;
 
   const existingUser = await findExistingUser(email);
 
@@ -37,7 +37,7 @@ export const signup = asyncHandler(async (req, res) => {
     throw new ApiError(400, "user already exists");
   }
 
-  const newUser = await createNewUser(name, email, password, address);
+  const newUser = await createNewUser(name, email, password);
 
   return res.status(200).json(
     new ApiResponse(200, "user created successfully", {
