@@ -37,7 +37,7 @@ export const validateCoupon = asyncHandler(async (req, res) => {
   });
 
   if (!coupon) {
-    throw new ApiError(404, "no coupon found");
+    throw new ApiError(404, "invalid coupon");
   }
 
   if (coupon.expirationDate < new Date()) {

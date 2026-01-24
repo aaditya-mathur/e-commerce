@@ -76,7 +76,7 @@ export const removeAll = asyncHandler(async (req, res) => {
     );
 });
 
-// TO ADJUST QUANTITY
+// TO UPDATE QUANTITY
 export const updateQuantity = asyncHandler(async (req, res) => {
   const { productId } = req.params;
 
