@@ -7,33 +7,43 @@ export const useUserStore = create((set, get) => ({
   loading: false,
   checkingAuth: true,
 
+  login: async (email, password) => {
+    set({ loading: true });
+    try {
+      await axios.post("/auth/login", { email, password });
+      await get().checkAuth();
+
+      set({ loading: false });
+      toast.success("Login successful!");
+      return true;
+    } catch (error) {
+      set({ loading: false });
+      toast.error(error.response?.data?.message || "An error occurred");
+      return false;
+    }
+  },
+
   signUp: async ({ name, email, password, confirmPassword }) => {
     set({ loading: true });
 
     if (password !== confirmPassword) {
       set({ loading: false });
-      return toast.error("Passwords do not match");
+      toast.error("Passwords do not match");
+      return false;
     }
 
     try {
-      const res = await axios.post("/auth/signup", { name, email, password });
-      set({ user: res.data.data, loading: false });
+      await axios.post("/auth/signup", { name, email, password });
+
+      await get().checkAuth();
+
+      set({ loading: false });
       toast.success("Account created successfully!");
+      return true;
     } catch (error) {
       set({ loading: false });
       toast.error(error.response?.data?.message || "An error occurred");
-    }
-  },
-
-  login: async (email, password) => {
-    set({ loading: true });
-    try {
-      const res = await axios.post("/auth/login", { email, password });
-      set({ user: res.data.data, loading: false });
-      toast.success("Login successful!");
-    } catch (error) {
-      set({ loading: false });
-      toast.error(error.response?.data?.message || "An error occurred");
+      return false;
     }
   },
 
@@ -44,19 +54,23 @@ export const useUserStore = create((set, get) => ({
       toast.success("Logged out successfully");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "An error occurred during logout"
+        error.response?.data?.message || "An error occurred during logout",
       );
     }
   },
 
   checkAuth: async () => {
     set({ checkingAuth: true });
+
     try {
       const res = await axios.get("/auth/profile");
-      set({ user: res.data.data, checkingAuth: false });
+      const userData = res.data.data || res.data.user || res.data;
+      set({
+        user: userData,
+        checkingAuth: false,
+      });
     } catch (error) {
-      console.log("Not authenticated");
-      set({ checkingAuth: false, user: null });
+      set({ user: null, checkingAuth: false });
     }
   },
 }));

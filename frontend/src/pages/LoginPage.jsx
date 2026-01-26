@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LogIn, Mail, Lock, ArrowRight, Loader } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { login, loading } = useUserStore();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(email, password);
+    const success = await login(email, password);
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (
@@ -57,7 +61,7 @@ const LoginPage = () => {
 									rounded-md shadow-sm
 									 placeholder-gray-400 focus:outline-none focus:ring-emerald-500 
 									 focus:border-emerald-500 sm:text-sm"
-                  placeholder="betterCallSaul@example.me"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -125,5 +129,4 @@ const LoginPage = () => {
     </div>
   );
 };
-
 export default LoginPage;

@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserPlus, Mail, Lock, User, ArrowRight, Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import { useUserStore } from "../stores/useUserStore";
 
 const SignUpPage = () => {
-  const { signUp, loading } = useUserStore();
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,9 +13,14 @@ const SignUpPage = () => {
     confirmPassword: "",
   });
 
-  const handleSubmit = (e) => {
+  const { signUp, loading } = useUserStore();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    signUp(formData);
+    const success = await signUp(formData);
+    if (success) {
+      navigate("/");
+    }
   };
 
   return (
@@ -61,7 +65,7 @@ const SignUpPage = () => {
                   }
                   className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm
 									 placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="Saul Goodman"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
@@ -89,7 +93,7 @@ const SignUpPage = () => {
 									rounded-md shadow-sm
 									 placeholder-gray-400 focus:outline-none focus:ring-emerald-500 
 									 focus:border-emerald-500 sm:text-sm"
-                  placeholder="betterCallSaul@example.me"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
