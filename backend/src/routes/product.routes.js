@@ -19,7 +19,7 @@ router.get("/", ensureAuthenticated, ensureAuthorized, getAllProducts);
 router.get("/featuredProducts", getFeaturedProducts);
 router.get("/recommendations", getRecommendedProducts);
 router.get("/category/:category", getProductsByCategory);
-router.post("/create", ensureAuthenticated, ensureAuthorized, createProduct);
+router.post("/", ensureAuthenticated, ensureAuthorized, createProduct);
 router.patch(
   "/:id",
   ensureAuthenticated,
